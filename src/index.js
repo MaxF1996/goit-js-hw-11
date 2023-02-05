@@ -14,10 +14,7 @@ const loadBtn = document.querySelector('.load-more');
 const endCollectionText = document.querySelector('.end-collection-text');
 
 function showCards(arr) {
-  gallery.insertAdjacentHTML(
-    'beforeend',
-    arr.map(item => cardTemplate(item)).join('')
-  );
+  gallery.insertAdjacentHTML('beforeend', arr.map(item => cardTemplate(item)).join(''));
 }
 
 let lightbox = new SimpleLightbox('.photo-card a', {
@@ -34,23 +31,23 @@ searchForm.addEventListener('submit', searchPhotos);
 
 async function searchPhotos(event) {
   event.preventDefault();
-  searchQuery = event.currentTarget.searchQuery.value;
+  searchQuery = event.currentTarget.searchQuery.value.trim();
   currentPage = 1;
 
-  if (searchQuery === '') {
+  if (!searchQuery) {
     return;
   }
 
-  const response = await fetchPhotos(searchQuery, currentPage);
-  currentHits = response.hits.length;
-
-  if (response.totalHits > 40) {
-    loadBtn.classList.remove('is-hidden');
-  } else {
-    loadBtn.classList.add('is-hidden');
-  }
-
   try {
+    const response = await fetchPhotos(searchQuery, currentPage);
+    currentHits = response.hits.length;
+
+    if (response.totalHits > 40) {
+      loadBtn.classList.remove('is-hidden');
+    } else {
+      loadBtn.classList.add('is-hidden');
+    }
+
     if (response.totalHits > 0) {
       Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
       gallery.innerHTML = '';
